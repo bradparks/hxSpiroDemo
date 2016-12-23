@@ -1,4 +1,4 @@
-package spiroSvg;
+package hxSpiroDemo.spiroSvg;
 import hxSpiro.Spiro;
 import hxSpiro.SpiroShapes;
 import hxSpiroDemo.spiroContext.SvgPathContext;
