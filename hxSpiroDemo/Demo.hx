@@ -17,7 +17,7 @@ import js.html.MouseEvent;
 import haxe.ds.Vector;
 import htmlHelper.canvas.CanvasWrapper;
 import htmlHelper.canvas.Surface;
-import spiroSvg.InteractiveCurve;
+import hxSpiroDemo.spiroSvg.InteractiveCurve;
 
 class Demo {
     var svgRoot: SvgRoot;
