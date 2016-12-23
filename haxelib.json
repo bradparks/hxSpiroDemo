@@ -1,0 +1,18 @@
+
+{
+	"name": "hxSpiroDemo",
+	"license": "GPL",
+	"tags": ["canvas","svg"],
+	"description": "hxSpiroDemo provides demo of hxSpiro possible use",
+	"contributors": [
+    "Nanjizal"
+  ],
+	"releasenote": "See https://github.com/nanjizal/hxSpiroDemo/blob/master/readme.md",
+	"version": "0.0.1",
+	"url": "https://github.com/nanjizal/hxSpiroDemo",
+	"classPath": "/",
+	"dependencies": {
+    "hxSpiro",
+    "htmlHelper"
+  }
+}
