@@ -9,6 +9,11 @@ import js.html.CSSStyleDeclaration;
 import hxSpiro.Spiro;
 import hxSpiroDemo.spiroContext.SvgPathContext;
 import hxSpiroDemo.spiroContext.CanvasPathContext;
+import hxSpiroDemo.spiroContext.WebGLPathContext;
+import justTriangles.PathContext;
+import justTrianglesWebGL.Drawing;
+import justTriangles.Triangle;
+import justTriangles.Draw;
 import hxSpiro.SpiroShapes;
 import htmlHelper.svg.SvgRoot;
 import htmlHelper.svg.SvgPath;
@@ -18,7 +23,17 @@ import haxe.ds.Vector;
 import htmlHelper.canvas.CanvasWrapper;
 import htmlHelper.canvas.Surface;
 import hxSpiroDemo.spiroSvg.InteractiveCurve;
-
+@:enum
+abstract RainbowColors( Int ){
+    var Violet = 0x9400D3;
+    var Indigo = 0x4b0082;
+    var Blue   = 0x0000FF;
+    var Green  = 0x00ff00;
+    var Yellow = 0xFFFF00;
+    var Orange = 0xFF7F00;
+    var Red    = 0xFF0000;
+    var Black  = 0x000000;
+}
 class Demo {
     var svgRoot: SvgRoot;
     var canvas: CanvasWrapper;
@@ -26,7 +41,8 @@ class Demo {
     var buttonHolder: DivElement;
     var contentHolder: DivElement;
     var curve: InteractiveCurve;
-    
+    var webgl: Drawing;
+    var rainbow = [ Black, Red, Orange, Yellow, Green, Blue, Indigo, Violet ];    
     public function new(){
         trace( 'Example of Spiro' );
         doc = Browser.document;
@@ -43,6 +59,8 @@ class Demo {
         setupSvg( 1024, 1024 );
         setupSvgCurve();
         testCircle({ x: 200., y: 100. }, 100., 100.,0xF7931E);
+        //setupWebGL( 1024 );
+        //testCircleWebGL({ x: 50., y: 100. }, 100., 100.,0x0f00ff);        
         //testCurve();
     }
     function createButtons(){
@@ -95,6 +113,9 @@ class Demo {
         canvas.height = 1024;
         contentHolder.appendChild( canvas );
     }
+    function setupWebGL( dim: Int ){
+        webgl = Drawing.create( dim );
+    }    
     function setupSvgCurve(){
         curve = new InteractiveCurve( svgRoot );
     }
@@ -107,6 +128,21 @@ class Demo {
         Spiro.spiroCPsToBezier0( points, 4, true, bc );
         surface.endFill();
     }
+    function testCircleWebGL( point, x: Float, y: Float, color: Int ){
+        var points = SpiroShapes.circle( point, x, y );
+        var surface: Surface = canvas.getContext2d();
+        var pathContext = new PathContext( 10, 300, 300 );
+        var bc = new WebGLPathContext( pathContext );
+        Draw.colorFill_id = 1;
+        Draw.colorLine_id = 1;
+        Draw.colorLine_id = 1;
+        Draw.extraFill_id = 1;
+        pathContext.fill = true;
+        pathContext.lineType = TriangleJoinCurve; // - default
+        Spiro.spiroCPsToBezier0( points, 4, true, bc );
+        pathContext.render( 30, false );
+        webgl.setTriangles( Triangle.triangles, cast rainbow );
+    }    
     function addPoint( e: MouseEvent ){
         var p: Point =  { x: e.clientX - 3, y: e.clientY - 3 };
         curve.addPoint( p );
