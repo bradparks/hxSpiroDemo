@@ -2,6 +2,9 @@
 -js test.js
 -lib htmlHelper
 -lib hxSpiro
+-lib justTriangles
+-lib justTrianglesWebGL
+-lib khaMath
 -cp src 
 -main Main
 -D js-flatten
