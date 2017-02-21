@@ -23,6 +23,7 @@ import haxe.ds.Vector;
 import htmlHelper.canvas.CanvasWrapper;
 import htmlHelper.canvas.Surface;
 import hxSpiroDemo.spiroSvg.InteractiveCurve;
+import hxSpiroDemo.spiroWebGL.CurveWebGL;
 @:enum
 abstract RainbowColors( Int ){
     var Violet = 0x9400D3;
@@ -41,12 +42,17 @@ class Demo {
     var buttonHolder: DivElement;
     var contentHolder: DivElement;
     var curve: InteractiveCurve;
+    var curveGL: CurveWebGL;
     var webgl: Drawing;
-    var rainbow = [ Black, Red, Orange, Yellow, Green, Blue, Indigo, Violet ];    
+    public static var rainbow = [ Black, Red, Orange, Yellow, Green, Blue, Indigo, Violet ];    
     public function new(){
         trace( 'Example of Spiro' );
         doc = Browser.document;
         contentHolder = doc.createDivElement();
+        contentHolder.style.backgroundColor = '#cccccc';
+        contentHolder.style.width = '1024px';
+        contentHolder.style.height = '1024px';
+        contentHolder.style.position = "absolute";
         contentHolder.style.zIndex = '-100';
         doc.body.appendChild( contentHolder );
         buttonHolder = doc.createDivElement();
@@ -58,8 +64,10 @@ class Demo {
         testCircleCanvas({ x: 50., y: 100. }, 100., 100.,0x0f00ff);
         setupSvg( 1024, 1024 );
         setupSvgCurve();
+        setupWebGL( 1024 );
+        setupCurveWebGL();
         testCircle({ x: 200., y: 100. }, 100., 100.,0xF7931E);
-        //setupWebGL( 1024 );
+        //
         //testCircleWebGL({ x: 50., y: 100. }, 100., 100.,0x0f00ff);        
         //testCurve();
     }
@@ -80,13 +88,14 @@ class Demo {
         contentHolder.removeEventListener( 'mousedown', makePointsDragable );
     }
     function modifyPoints( e: MouseEvent ){
-        trace('curveAllowAddPoints');
+        trace('modifyPoints');
         contentHolder.removeEventListener( 'mousedown', addPoint );
         contentHolder.addEventListener( 'mousedown', makePointsDragable );
     }
     var circIndex: Int;
     function makePointsDragable( e: MouseEvent ){
-        var i: Int = curve.checkCircle( e.clientX, e.clientY );
+        trace( 'checking for circle at ' + ( e.clientX - 6 ) +' '+ ( e.clientY - 6 ) );
+        var i: Int = curveGL.checkCircle( e.clientX - 6, e.clientY - 6 );
         if( i != null ) {
             circIndex = i;
             contentHolder.addEventListener( 'mousemove', repositionCircle );
@@ -98,7 +107,8 @@ class Demo {
         contentHolder.removeEventListener( 'mouseup', killMouseMove );
     }
     function repositionCircle( e: MouseEvent ){
-        curve.redrawCircle( circIndex, e.clientX, e.clientY );
+        curveGL.redrawCircle( circIndex, e.clientX, e.clientY );
+        //curve.redrawCircle( circIndex, e.clientX, e.clientY );
     }
     
     function setupSvg( wid: Int, hi: Int ){
@@ -115,9 +125,14 @@ class Demo {
     }
     function setupWebGL( dim: Int ){
         webgl = Drawing.create( dim );
+        var dom = cast webgl.canvas;
+        dom.style.setProperty("pointer-events","none");
     }    
     function setupSvgCurve(){
         curve = new InteractiveCurve( svgRoot );
+    }
+    function setupCurveWebGL(){
+        curveGL = new CurveWebGL( webgl );
     }
     function testCircleCanvas( point, x: Float, y: Float, color: Int ){
         var points = SpiroShapes.circle( point, x, y );
@@ -145,7 +160,8 @@ class Demo {
     }    
     function addPoint( e: MouseEvent ){
         var p: Point =  { x: e.clientX - 3, y: e.clientY - 3 };
-        curve.addPoint( p );
+        curveGL.addPoint( p );
+        //curve.addPoint( p );
     }
     function testCircle( point, x: Float, y: Float, color: Int ){
         var circlePath = new SvgPath();
