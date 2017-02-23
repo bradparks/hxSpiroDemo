@@ -80,7 +80,7 @@ class CurveWebGL {
         
         Spiro.taggedSpiroCPsToBezier0( points, bc );
         for( p in arr ){
-            var point2 = cast { x: p.x, y: p.y };
+            var point2 = cast { x: p.x - 3, y: p.y - 3 };
             var points2 = SpiroShapes.circle( point2, 6, 6 );
             pathContext.moveTo( p.x, p.y );
             Spiro.spiroCPsToBezier0( points2, 4, true, bc );
@@ -92,12 +92,12 @@ class CurveWebGL {
     
     public function redrawCircle( i: Int, x: Float, y: Float ): Void {
         var point = cast { x: x, y: y };
-        limits[ i ] = cast { left: point.x - 5, top: point.y - 5, right: point.x + 6 + 5, bottom: point.y + 6 + 5};
+        limits[ i ] = cast { left: point.x - 5, top: point.y - 5, right: point.x + 5, bottom: point.y + 5};
         arr[ i ].x = x;
         arr[ i ].y = y;
         draw();
     }
     function drawCircle( point: Point ){
-        limits.push( cast { left: point.x - 5, top: point.y - 5, right: point.x + 6 + 5, bottom: point.y + 6 + 5} );
+        limits.push( cast { left: point.x - 5, top: point.y - 5, right: point.x + 5, bottom: point.y + 5} );
     }
 }
